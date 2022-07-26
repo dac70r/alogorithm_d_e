@@ -7,5 +7,5 @@ distance_energy: distance_energy
 main: main
 	gcc -c main.c
 
-clean: main
-	rm main.o
+clean: 
+	rm main.o distance_energy.o a.exe 
