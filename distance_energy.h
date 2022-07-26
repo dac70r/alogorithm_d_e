@@ -5,18 +5,9 @@
 #define DATA_POINTS_THIRTEEN            13
 #define DATA_POINTS_TWENTYONE           21
 
-//
-static uint8_t coefficient_array[DATA_POINTS_THIRTEEN] = {0,1,2,3};
-//uint8_t coefficient_array_contructor(uint8_t* []);
-/*
-static uint8_t coefficient_matrix_a[13] = {1, 4, 2,            // Array for coefficient matrix of Simpson's Rule (calculate every 13 seconds)
-                                         4, 2, 4, 
-                                         2, 4, 2, 
-                                         4, 2, 4, 1};
+//Local Variables
+static uint8_t coefficient_array[DATA_POINTS_THIRTEEN] = {64,32,16,8,4,2,1};
 
-/*
-static uint8_t coefficient_matrix_a[13] = {1, 4, 2,            // Array for coefficient matrix of Simpson's Rule (calculate every 13 seconds)
-                                         4, 2, 4, 
-                                         2, 4, 2, 
-                                         4, 2, 4, 1};
-*/
+//Local Functions
+void coefficient_array_init(uint8_t (*ptr)[]);
+//void coefficient_array_init_value(uint8_t ptr);
