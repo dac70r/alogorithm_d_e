@@ -1,13 +1,13 @@
 /*
- * battery.c
+ * distance_energy.c
  *
  *  Created on: 21 Jul 2022
  *      Author: Dennis
  */
 /******************************************************************************
-@file  battery.c
+@file  distance_energy.c
 
-@brief This file contains the Code to send the battery status to phone via BLE protocol
+@brief This file contains the Code to calculate the distance travelled and energy consumed by the e-scooter
 
 
 *****************************************************************************/
