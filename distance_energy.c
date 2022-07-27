@@ -76,7 +76,7 @@ void all_array_init(void ){
  *          All "first" elements are updated with the "last" element of the array and the rest are
  *          updated with zeros. eg. speed[0] = speed[12], speed[1] = 0, speed[2] = 0......
  *
- * @param   none             
+ * @param   ptr, ptrcm, ptrvm           pointer to coefficient array, voltage_motor and current_motor array            
  *
  * @return  none
  * 
@@ -106,21 +106,49 @@ void all_array_deinit(uint32_t (*ptr32)[] ,uint8_t (*ptrcm)[] ,uint8_t(*ptrvm)[]
  * @brief   This function calculates the average energy consumption of the e_scooter 
  *          over a period using Simpson's Rule
  *
- * @param   none             
+ * @param   ptr, ptrcm, ptrvm           pointer to coefficient array, voltage_motor and current_motor array            
  *
- * @return  uint32_t 
+ * @return  energy consumption value in uint32_t 
  * 
 */
 
 uint32_t compute_energy_consumption(uint8_t (*ptr)[] ,uint8_t (*ptrcm)[] ,uint8_t(*ptrvm)[]){
 
-    uint32_t sum = 0;
+    uint32_t energy_consumption = 0;
+    float mean;
+
     for(uint8_t x=0; x<DATA_POINTS; x++){
         
-        sum = sum + (*((*ptr)+ x)) * (*((*ptrcm)+ x)) * (*((*ptrvm)+ x));
+        energy_consumption = energy_consumption + ((*((*ptr)+ x)) * (*((*ptrcm)+ x)) * (*((*ptrvm)+ x)));
 
     }
-    return sum;
+    mean = (float)energy_consumption/3*TIME_INTERVAL;
+    energy_consumption = (uint32_t)mean;
+    return energy_consumption;
+}
+
+/*
+ * @fn      collect_mcu_data
+
+ * @brief   This function collects the voltage, rpm, current values from the MCU and append it into the 
+ *          arrays declared. 
+ *
+ * @param   ptr, ptrcm, ptrvm           pointer to coefficient array, voltage_motor and current_motor array            
+ *
+ * @return  energy consumption value in uint32_t 
+ * 
+*/
+
+void collect_mcu_data (uint32_t (*rpm_ptr)[] ,uint8_t (*cm_ptrcm)[] ,uint8_t(*vm_ptrvm)[], uint32_t (*ptr32)[] ,uint8_t (*ptrcm)[] ,uint8_t(*ptrvm)[]){
+
+    for(uint8_t x=0; x<DATA_POINTS; x++){
+        
+        *((*ptr32)+ x) = *((*rpm_ptr)+ x); 
+        *((*ptrcm)+ x) = *((*cm_ptrcm)+ x);
+        *((*ptrvm)+ x) = *((*vm_ptrvm)+ x);
+
+    }
+    
 }
 
 

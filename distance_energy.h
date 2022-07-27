@@ -23,5 +23,6 @@ void coefficient_array_init(uint8_t (*ptr)[]);
 void all_array_deinit(uint32_t (*ptr32)[] ,uint8_t (*ptrcm)[] ,uint8_t (*ptrvm)[]);
 void all_array_init(void );
 uint32_t compute_energy_consumption(uint8_t (*ptr)[] ,uint8_t (*ptrcm)[] ,uint8_t(*ptrvm)[]);
+void collect_mcu_data (uint32_t (*rpm_ptr)[] ,uint8_t (*cm_ptrcm)[] ,uint8_t(*vm_ptrvm)[], uint32_t (*ptr32)[] ,uint8_t (*ptrcm)[] ,uint8_t(*ptrvm)[]);
 //void all(void);
 //void all_pointer_init(void );
