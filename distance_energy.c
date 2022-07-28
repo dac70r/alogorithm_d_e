@@ -29,6 +29,7 @@ uint32_t (*ptr32)[DATA_POINTS] = &speed;
 uint8_t (*ptrvm)[DATA_POINTS] = &voltage_motor;
 uint8_t (*ptrcm)[DATA_POINTS] = &current_motor; 
 
+uint32_t energy_consumed = 0;
 /*********************************************************************
 * LOCAL FUNCTIONS
 */
@@ -92,7 +93,7 @@ void all_array_init(void ){
 */
 
 void all_array_deinit(){
-
+    energy_consumed = compute_energy_consumption();
     for(uint8_t x=0; x<DATA_POINTS; x++){
         if(x == 0){
             *(*(ptr32)) = *(*(ptr32)+DATA_POINTS-1); 
@@ -163,7 +164,8 @@ void collect_mcu_data (uint32_t (*rpm_ptr)[] ,uint8_t (*cm_ptrcm)[] ,uint8_t(*vm
 void all_all_array_init(){
 
     coefficient_array_init();
-    //all_array_init();
+    all_array_init();
+
 
 }
 

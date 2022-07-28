@@ -17,6 +17,8 @@ extern uint32_t (*ptr32)[DATA_POINTS];         // pointer to speed array 32bits
 extern uint8_t (*ptrvm)[DATA_POINTS];          // pointer to voltage motor array 8bits
 extern uint8_t (*ptrcm)[DATA_POINTS];          // pointer to current motor array 8bits
 
+extern uint32_t energy_consumed;                  // this variable stores the average energy consumed by the e-scooter before it deinitializes at the end of each array
+
 //Local Functions
 void coefficient_array_init();
 void all_array_deinit();

@@ -2,36 +2,18 @@
 // uint8_t size is 1 byte (1-255)
 
 int main(){
-
-     for(uint8_t x=0; x<DATA_POINTS; x++){
+        
+        for(uint8_t x=0; x<DATA_POINTS; x++){
             printf("%d\n",*((*ptr)+ x));     
-    }
+        }
+
+        printf("next----------------------\n");   
 
     all_all_array_init();
 
     for(uint8_t x=0; x<DATA_POINTS; x++){
             printf("%d\n",*((*ptr)+ x));     
     }
-
-    printf("next----------------------\n");
-
-    for(uint8_t x=0; x<DATA_POINTS; x++){
-            printf("%d\n",*((*ptr32)+ x));     
-    }
-
-    printf("next----------------------\n");
-
-    for(uint8_t x=0; x<DATA_POINTS; x++){
-            printf("%d\n",*((*ptrvm)+ x));     
-    }
-
-    printf("next----------------------\n");
-
-    for(uint8_t x=0; x<DATA_POINTS; x++){
-            printf("%d\n",*((*ptrcm)+ x));     
-    }
-
-    all_array_deinit();
 
     printf("next----------------------\n");
 
@@ -75,9 +57,28 @@ int main(){
     for(uint8_t x=0; x<DATA_POINTS; x++){
             printf("%d\n",*((*ptrvm)+ x));     
     }
-    //all_array_deinit(ptr32, ptrcm, ptrvm);
-    //printf("Power consumption is: %d\n",compute_energy_consumption());
-    printf("Energy consumption is : %d joules\n",compute_energy_consumption());
+
+    all_array_deinit();
+
+    printf("next----------------------\n");
+
+    for(uint8_t x=0; x<DATA_POINTS; x++){
+            printf("%d\n",*((*ptr32)+ x));     
+    }
+
+    printf("next----------------------\n");
+
+    for(uint8_t x=0; x<DATA_POINTS; x++){
+            printf("%d\n",*((*ptrcm)+ x));     
+    }
+
+    printf("next----------------------\n");
+
+    for(uint8_t x=0; x<DATA_POINTS; x++){
+            printf("%d\n",*((*ptrvm)+ x));     
+    }
+
+    printf("Energy consumption is : %d joules\n",energy_consumed);
     return 0;
 }
 
