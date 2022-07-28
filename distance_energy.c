@@ -19,6 +19,15 @@
 /*********************************************************************
 * LOCAL VARIABLES
 */
+uint8_t coefficient_array[DATA_POINTS] = {1,2,3,4,5,6,7,8,9,10,11,12,13};
+uint32_t speed[DATA_POINTS] = {1,1,1,1,1,1,1,1,1,1,1,1,1};
+uint8_t voltage_motor[DATA_POINTS] = {2,2,2,2,2,2,2,2,2,2,2,2,2};
+uint8_t current_motor[DATA_POINTS] = {3,3,3,3,3,3,3,3,3,3,3,3,3};
+
+uint8_t (*ptr)[DATA_POINTS] = &coefficient_array;
+uint32_t (*ptr32)[DATA_POINTS] = &speed;                 
+uint8_t (*ptrvm)[DATA_POINTS] = &voltage_motor;
+uint8_t (*ptrcm)[DATA_POINTS] = &current_motor; 
 
 /*********************************************************************
 * LOCAL FUNCTIONS
@@ -34,7 +43,7 @@
  * 
 */
 
-void coefficient_array_init(uint8_t (*ptr)[]){ //change data points if necessary
+void coefficient_array_init(){ //change data points if necessary
 
     for(uint8_t x=0; x<DATA_POINTS; x++){
 
@@ -82,7 +91,7 @@ void all_array_init(void ){
  * 
 */
 
-void all_array_deinit(uint32_t (*ptr32)[] ,uint8_t (*ptrcm)[] ,uint8_t(*ptrvm)[]){
+void all_array_deinit(){
 
     for(uint8_t x=0; x<DATA_POINTS; x++){
         if(x == 0){
@@ -112,7 +121,7 @@ void all_array_deinit(uint32_t (*ptr32)[] ,uint8_t (*ptrcm)[] ,uint8_t(*ptrvm)[]
  * 
 */
 
-uint32_t compute_energy_consumption(uint8_t (*ptr)[] ,uint8_t (*ptrcm)[] ,uint8_t(*ptrvm)[]){
+uint32_t compute_energy_consumption(){
 
     uint32_t energy_consumption = 0;
     float mean;
@@ -139,7 +148,7 @@ uint32_t compute_energy_consumption(uint8_t (*ptr)[] ,uint8_t (*ptrcm)[] ,uint8_
  * 
 */
 
-void collect_mcu_data (uint32_t (*rpm_ptr)[] ,uint8_t (*cm_ptrcm)[] ,uint8_t(*vm_ptrvm)[], uint32_t (*ptr32)[] ,uint8_t (*ptrcm)[] ,uint8_t(*ptrvm)[]){
+void collect_mcu_data (uint32_t (*rpm_ptr)[] ,uint8_t (*cm_ptrcm)[] ,uint8_t(*vm_ptrvm)[]){
 
     for(uint8_t x=0; x<DATA_POINTS; x++){
         
@@ -150,6 +159,14 @@ void collect_mcu_data (uint32_t (*rpm_ptr)[] ,uint8_t (*cm_ptrcm)[] ,uint8_t(*vm
     }
     
 }
+
+void all_all_array_init(){
+
+    coefficient_array_init();
+    //all_array_init();
+
+}
+
 
 
 
