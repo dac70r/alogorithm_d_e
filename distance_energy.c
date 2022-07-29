@@ -17,10 +17,11 @@
 /*********************************************************************
 * LOCAL VARIABLES
 */
-uint8_t coefficient_array[DATA_POINTS] = {1,2,3,4,5,6,7,8,9,10,11,12,13};   //depending on the size of the array, could increase up to 21 elements
-uint32_t rpm[DATA_POINTS] = {1,1,1,1,1,1,1,1,1,1,1,1,1};                    //revolutions per minute data collected every time interval      
-uint8_t voltage_motor[DATA_POINTS] = {2,2,2,2,2,2,2,2,2,2,2,2,2};           //voltage_motor data collected every time interval 
-uint8_t current_motor[DATA_POINTS] = {3,3,3,3,3,3,3,3,3,3,3,3,3};           //current_motor data collected every time interval 
+uint8_t coefficient_array[DATA_POINTS] = {1,2,3};       //depending on the size of the array, could increase up to 21 elements
+uint32_t rpm[DATA_POINTS] = {4,5,6};                    //revolutions per minute data collected every time interval
+uint8_t current_motor[DATA_POINTS] = {7,8,9};        //current_motor data collected every time interval       
+uint8_t voltage_motor[DATA_POINTS] = {10,11,12};           //voltage_motor data collected every time interval 
+
 
 uint8_t (*ptr)[DATA_POINTS] = &coefficient_array;
 uint32_t (*ptr32)[DATA_POINTS] = &rpm;                 
@@ -28,6 +29,7 @@ uint8_t (*ptrvm)[DATA_POINTS] = &voltage_motor;
 uint8_t (*ptrcm)[DATA_POINTS] = &current_motor; 
 
 uint32_t energy_consumed = 0;
+uint8_t status = 0;
 /*********************************************************************
 * LOCAL FUNCTIONS
 */
@@ -58,6 +60,40 @@ void coefficient_array_init(){ //change data points if necessary
 }
 
 /*
+ * @fn      all_array_deinit
+ *
+ * @brief   It is used to deinitialize all arrays when the number of data points reach maximum (13/21)
+ *          All "first" elements are updated with the "last" element of the array and the rest are
+ *          updated with zeros. eg. speed[0] = speed[12], speed[1] = 0, speed[2] = 0......
+ *          Before deinitiliazation, the average energy consumption for that interval is computed and 
+ *          stored in a global variable named energy_consumed. 
+ *
+ * @param   none          
+ *
+ * @return  none
+ * 
+*/
+
+void all_array_deinit(){
+    
+    for(uint8_t x=0; x<DATA_POINTS; x++){
+        if(x == 0){
+            *(*(ptr32)) = *(*(ptr32)+DATA_POINTS-1); 
+            *(*(ptrvm)) = *(*(ptrvm)+DATA_POINTS-1); 
+            *(*(ptrcm)) = *(*(ptrcm)+DATA_POINTS-1); 
+        }
+        else
+            {
+                *(*(ptr32)+x) = 0; 
+                *(*(ptrvm)+x) = 0; 
+                *(*(ptrcm)+x) = 0; 
+        }
+
+    }
+    status = 1;
+}
+
+/*
  * @fn      all_array_init
  *
  * @brief   It is used to initialize all arrays to zero arrays
@@ -69,12 +105,13 @@ void coefficient_array_init(){ //change data points if necessary
 */
 
 void all_array_init(void ){
-    
+    if (status == 0){
     for(uint8_t x=0; x<DATA_POINTS; x++){
         rpm[x] = 0; 
         current_motor[x] = 0;
         voltage_motor[x] = 0; 
-    }
+    }}
+    else{all_array_deinit();}
 }
 
 /*
@@ -93,6 +130,7 @@ void all_all_array_init(){
 
     coefficient_array_init();
     all_array_init();
+    
 
 
 }
@@ -125,40 +163,6 @@ uint32_t compute_energy_consumption(){
 }
 
 /*
- * @fn      all_array_deinit
- *
- * @brief   It is used to deinitialize all arrays when the number of data points reach maximum (13/21)
- *          All "first" elements are updated with the "last" element of the array and the rest are
- *          updated with zeros. eg. speed[0] = speed[12], speed[1] = 0, speed[2] = 0......
- *          Before deinitiliazation, the average energy consumption for that interval is computed and 
- *          stored in a global variable named energy_consumed. 
- *
- * @param   none          
- *
- * @return  none
- * 
-*/
-
-void all_array_deinit(){
-    energy_consumed = compute_energy_consumption();
-    for(uint8_t x=0; x<DATA_POINTS; x++){
-        if(x == 0){
-            *(*(ptr32)) = *(*(ptr32)+DATA_POINTS-1); 
-            *(*(ptrvm)) = *(*(ptrvm)+DATA_POINTS-1); 
-            *(*(ptrcm)) = *(*(ptrcm)+DATA_POINTS-1); 
-        }
-        else
-            {
-                *(*(ptr32)+x) = 0; 
-                *(*(ptrvm)+x) = 0; 
-                *(*(ptrcm)+x) = 0; 
-        }
-
-    }
-}
-
-
-/*
  * @fn      collect_mcu_data
 
  * @brief   This function collects the voltage, rpm, current values from the MCU and append it into the 
@@ -172,15 +176,47 @@ void all_array_deinit(){
 
 void collect_mcu_data (uint32_t (*rpm_ptr)[] ,uint8_t (*cm_ptrcm)[] ,uint8_t(*vm_ptrvm)[]){
 
-    for(uint8_t x=0; x<DATA_POINTS; x++){
+    uint8_t x = 0;
+    if (status == 1){x=1;}
+    for(x; x<DATA_POINTS; x++){
         
-        printf("%f\n",((*((*rpm_ptr)+ x))*RADIUS*2*M_PI/60)*3600/1000);
+        //printf("%f\n",((*((*rpm_ptr)+ x))*RADIUS*2*M_PI/60)*3600/1000);
         *((*ptr32)+ x) = (uint32_t)(((*((*rpm_ptr)+ x))*RADIUS*2*M_PI/60)*3600/1000); //radius * 2 * pi / 60;
         *((*ptrcm)+ x) = *((*cm_ptrcm)+ x);
         *((*ptrvm)+ x) = *((*vm_ptrvm)+ x);
 
     }
+    energy_consumed = compute_energy_consumption();
+    status = 1;
     
+}
+
+void print_log(){
+
+    for(uint8_t x=0; x<DATA_POINTS; x++){
+            printf(" %d\t",*((*ptr)+ x));     
+    }
+
+    printf("coefficient array\n");
+
+    for(uint8_t x=0; x<DATA_POINTS; x++){
+            printf(" %d\t",*((*ptr32)+ x));     
+    }
+
+    printf("speed array\n");
+
+    for(uint8_t x=0; x<DATA_POINTS; x++){
+            printf(" %d\t",*((*ptrcm)+ x));     
+    }
+
+    printf("current_motor array\n");
+
+    for(uint8_t x=0; x<DATA_POINTS; x++){
+            printf(" %d\t",*((*ptrvm)+ x));     
+    }
+
+    printf("voltage_motor array\n");
+
 }
 
 

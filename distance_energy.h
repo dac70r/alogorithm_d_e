@@ -20,6 +20,7 @@ extern uint8_t (*ptrvm)[DATA_POINTS];               // pointer to voltage motor 
 extern uint8_t (*ptrcm)[DATA_POINTS];               // pointer to current motor array 8bits
 
 extern uint32_t energy_consumed;                    // this variable stores the average energy consumed by the e-scooter before it deinitializes at the end of each array
+extern uint8_t status;                              // this variable is used to determine if the program is running 
 
 //Local Functions
 void coefficient_array_init();
@@ -28,4 +29,4 @@ void all_array_init();
 void all_all_array_init ();
 void collect_mcu_data (uint32_t (*rpm_ptr)[] ,uint8_t (*cm_ptrcm)[] ,uint8_t(*vm_ptrvm)[]);
 uint32_t compute_energy_consumption();
-
+void print_log();
