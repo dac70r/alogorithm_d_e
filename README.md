@@ -4,6 +4,9 @@ This is an algorithm written to compute the average distance travelled and energ
 Includes:
 Using pointers to access elements in an array and passing an array into a function using pointers.
 
+Some unresolved issues:
+Floating points are used quite extensively, which is not ideal for microcontrollers. To fix this, one must convert the floatings points into binary form and to do that, an encoding algorithm must be applied, working on that now. 
+
 For notes, visit this link: 
 https://www.notion.so/Pointers-III-88b57982e39b43b5afe2238e16619a38
 
