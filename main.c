@@ -3,6 +3,88 @@
 
 int main(){
 
+        //verify the array contents
+        print_log();
+
+        //initialize the coefficient_array
+        coefficient_array_init();
+
+        //simulate adding data into array
+        program();
+
+        //verify the array contents
+        print_log();
+
+        //deinitializing array
+        all_array_deinit();
+
+        //verify the array contents
+        print_log();
+
+        //simulate adding data into array
+        program();
+
+        //verify the array contents
+        print_log();
+
+        //deinitializing array
+        all_array_deinit();
+
+        //verify the array contents
+        print_log();
+
+        //simulate adding data into array
+        program();
+
+        //verify the array contents
+        print_log();
+
+        //deinitializing array
+        all_array_deinit();
+
+        //verify the array contents
+        print_log();
+        
+              
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+    return 0;
+}
+
+/*
+        
         printf("Printf initial values for all arrays\n");
         print_log();
         all_all_array_init();
@@ -36,11 +118,8 @@ int main(){
         all_all_array_init();
         printf("Values for all arrays after deinitializing the arrays----2\n");
         print_log();
-    
 
-    return 0;
-}
-
+*/
 
 
 
