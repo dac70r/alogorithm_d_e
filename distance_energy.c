@@ -125,6 +125,16 @@ uint32_t compute_energy_consumption(){
     return energy_consumption;
 }
 
+/*
+ * @fn      print_log
+ *
+ * @brief   This function is used to debug the system. Checks the contents of the arrays. Must edit for use on micro-controller. 
+ *
+ * @param   none            
+ *
+ * @return  none
+ * 
+*/
 
 void print_log(){
     printf("------------------------------------------------NEXT----------------------------------------------------\n");
@@ -153,6 +163,18 @@ void print_log(){
     printf("voltage_motor array\n");
 
 }
+
+/*
+ * @fn      program
+ *
+ * @brief   This function simulates the reception and insertion of data received from the MCU to the arrays defined. 
+ *          Functions exits when array is fully filled. 
+ *
+ * @param   none            
+ *
+ * @return  none
+ * 
+*/
 
 void program(){
     uint8_t x = 0;  
