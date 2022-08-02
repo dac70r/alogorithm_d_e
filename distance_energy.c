@@ -17,17 +17,24 @@
 /*********************************************************************
 * LOCAL VARIABLES
 */
-uint8_t coefficient_array[DATA_POINTS] = {1,2,3,4,5,6,7,8,9,10,11,12,13};   //depending on the size of the array, could increase up to 21 elements
-uint32_t rpm[DATA_POINTS] = {1,1,1,1,1,1,1,1,1,1,1,1,1};                    //revolutions per minute data collected every time interval      
-uint8_t voltage_motor[DATA_POINTS] = {2,2,2,2,2,2,2,2,2,2,2,2,2};           //voltage_motor data collected every time interval 
-uint8_t current_motor[DATA_POINTS] = {3,3,3,3,3,3,3,3,3,3,3,3,3};           //current_motor data collected every time interval 
+uint8_t coefficient_array[DATA_POINTS] = {1,2,3};       //depending on the size of the array, could increase up to 21 elements
+uint32_t rpm[DATA_POINTS] = {4,5,6};                    //revolutions per minute data collected every time interval
+uint8_t current_motor[DATA_POINTS] = {7,8,9};           //current_motor data collected every time interval       
+uint8_t voltage_motor[DATA_POINTS] = {10,11,12};        //voltage_motor data collected every time interval 
 
+//Pointers to various arrays 
 uint8_t (*ptr)[DATA_POINTS] = &coefficient_array;
 uint32_t (*ptr32)[DATA_POINTS] = &rpm;                 
 uint8_t (*ptrvm)[DATA_POINTS] = &voltage_motor;
 uint8_t (*ptrcm)[DATA_POINTS] = &current_motor; 
 
-uint32_t energy_consumed = 0;
+//Other Variables
+uint16_t energy_consumed = 0;
+uint16_t distance_travelled = 0;
+uint8_t status = 0;
+time_t t;
+
+
 /*********************************************************************
 * LOCAL FUNCTIONS
 */
@@ -58,43 +65,39 @@ void coefficient_array_init(){ //change data points if necessary
 }
 
 /*
- * @fn      all_array_init
+ * @fn      all_array_deinit
  *
- * @brief   It is used to initialize all arrays to zero arrays
+ * @brief   It is used to deinitialize all arrays when the number of data points reach maximum (13/21)
+ *          All "first" elements are updated with the "last" element of the array and the rest are
+ *          updated with zeros. eg. speed[0] = speed[12], speed[1] = 0, speed[2] = 0......
+ *          Before deinitiliazation, the average energy consumption for that interval is computed and 
+ *          stored in a global variable named energy_consumed. 
  *
- * @param   none             
+ * @param   none          
  *
  * @return  none
  * 
 */
 
-void all_array_init(void ){
-    
+void all_array_deinit(){
+    energy_consumed = compute_energy_consumption();
+    distance_travelled =  compute_distance_travelled();
+    printf("Average energy consumption in this interval is %d joules, total distance travelled in this interval is %d meters\n",compute_energy_consumption(),compute_distance_travelled());
     for(uint8_t x=0; x<DATA_POINTS; x++){
-        rpm[x] = 0; 
-        current_motor[x] = 0;
-        voltage_motor[x] = 0; 
+        if(x == 0){
+            *(*(ptr32)) = *(*(ptr32)+DATA_POINTS-1); 
+            *(*(ptrvm)) = *(*(ptrvm)+DATA_POINTS-1); 
+            *(*(ptrcm)) = *(*(ptrcm)+DATA_POINTS-1); 
+        }
+        else
+            {
+                *(*(ptr32)+x) = 0; 
+                *(*(ptrvm)+x) = 0; 
+                *(*(ptrcm)+x) = 0; 
+        }
+
     }
-}
-
-/*
- * @fn      all_all_array_init
-
- * @brief   This function calls coefficient_array_init and all_array_init functions which initializes the coefficient array and other declared arrays.
-            Use this function at the start of the program. 
- *
- * @param   none         
- *
- * @return  none
- * 
-*/
-
-void all_all_array_init(){
-
-    coefficient_array_init();
-    all_array_init();
-
-
+    
 }
 
 /*
@@ -125,40 +128,144 @@ uint32_t compute_energy_consumption(){
 }
 
 /*
- * @fn      all_array_deinit
+ * @fn      compute_distance_travelled
  *
- * @brief   It is used to deinitialize all arrays when the number of data points reach maximum (13/21)
- *          All "first" elements are updated with the "last" element of the array and the rest are
- *          updated with zeros. eg. speed[0] = speed[12], speed[1] = 0, speed[2] = 0......
- *          Before deinitiliazation, the average energy consumption for that interval is computed and 
- *          stored in a global variable named energy_consumed. 
+ * @brief   This function calculates the average distance_travelled of the e_scooter 
+ *          over a period using Simpson's Rule
  *
- * @param   none          
+ * @param   none            
+ *
+ * @return  distance_travelled (unit meters) in type: uint32_t 
+ * 
+*/
+
+uint32_t compute_distance_travelled(){
+
+    uint32_t distance_travelled = 0;
+    float mean;
+
+    for(uint8_t x=0; x<DATA_POINTS; x++){
+        
+        distance_travelled = distance_travelled + ((*((*ptr)+ x)) * (*((*ptr32)+ x)));
+
+    }
+    mean = (float)distance_travelled/3*((DATA_POINTS-1)*TIME_INTERVAL);
+    distance_travelled = (uint32_t)mean;
+    return distance_travelled;
+}
+
+/*
+ * @fn      print_log
+ *
+ * @brief   This function is used to debug the system. Checks the contents of the arrays. Must edit for use on micro-controller. 
+ *
+ * @param   none            
  *
  * @return  none
  * 
 */
 
-void all_array_deinit(){
-    energy_consumed = compute_energy_consumption();
+void print_log(){
+    printf("------------------------------------------------NEXT----------------------------------------------------\n");
     for(uint8_t x=0; x<DATA_POINTS; x++){
-        if(x == 0){
-            *(*(ptr32)) = *(*(ptr32)+DATA_POINTS-1); 
-            *(*(ptrvm)) = *(*(ptrvm)+DATA_POINTS-1); 
-            *(*(ptrcm)) = *(*(ptrcm)+DATA_POINTS-1); 
-        }
-        else
-            {
-                *(*(ptr32)+x) = 0; 
-                *(*(ptrvm)+x) = 0; 
-                *(*(ptrcm)+x) = 0; 
-        }
+            printf(" %d\t",*((*ptr)+ x));     
+    }
 
+    printf("coefficient array\n");
+
+    for(uint8_t x=0; x<DATA_POINTS; x++){
+            printf(" %d\t",*((*ptr32)+ x));     
+    }
+
+    printf("speed array\n");
+
+    for(uint8_t x=0; x<DATA_POINTS; x++){
+            printf(" %d\t",*((*ptrcm)+ x));     
+    }
+
+    printf("current_motor array\n");
+
+    for(uint8_t x=0; x<DATA_POINTS; x++){
+            printf(" %d\t",*((*ptrvm)+ x));     
+    }
+
+    printf("voltage_motor array\n");
+
+}
+
+/*
+ * @fn      program
+ *
+ * @brief   This function simulates the reception and insertion of data received from the MCU to the arrays defined. 
+ *          Functions exits when array is fully filled. 
+ *
+ * @param   none            
+ *
+ * @return  none
+ * 
+*/
+
+void program(){
+    uint8_t x = 0;  
+    /* Intializes random number generator */
+    srand((unsigned) time(&t));
+    if(status == 1){x = 1;}
+    while(x<DATA_POINTS){
+            
+            *((*ptrcm)+ x) = rand()%50;
+            *((*ptr32)+ x) = rand()%50;
+            *((*ptrvm)+ x) = rand()%50; 
+
+            if( x == DATA_POINTS-1){
+                    status = 1;
+                    break;
+            }
+        x++;
+    }
+}
+
+////////////////////////Unused functions/////////////////////////////
+
+/*
+ * @fn      all_array_init
+ *
+ * @brief   It is used to initialize all arrays to zero arrays
+ *
+ * @param   none             
+ *
+ * @return  none
+ * 
+
+
+void all_array_init(void ){
+
+    for(uint8_t x=0; x<DATA_POINTS; x++){
+        rpm[x] = 0; 
+        current_motor[x] = 0;
+        voltage_motor[x] = 0; 
     }
 }
 
 
-/*
+ * @fn      all_all_array_init
+
+ * @brief   This function calls coefficient_array_init and all_array_init functions which initializes the coefficient array and other declared arrays.
+            Use this function at the start of the program. 
+ *
+ * @param   none         
+ *
+ * @return  none
+ * 
+
+
+void all_all_array_init(){
+
+    coefficient_array_init();
+    all_array_init();
+    
+}
+
+
  * @fn      collect_mcu_data
 
  * @brief   This function collects the voltage, rpm, current values from the MCU and append it into the 
@@ -168,24 +275,21 @@ void all_array_deinit(){
  *
  * @return  none 
  * 
-*/
+
 
 void collect_mcu_data (uint32_t (*rpm_ptr)[] ,uint8_t (*cm_ptrcm)[] ,uint8_t(*vm_ptrvm)[]){
 
-    for(uint8_t x=0; x<DATA_POINTS; x++){
+    uint8_t x = 0;
+    for(x; x<DATA_POINTS; x++){
         
-        printf("%f\n",((*((*rpm_ptr)+ x))*RADIUS*2*M_PI/60)*3600/1000);
+        //printf("%f\n",((*((*rpm_ptr)+ x))*RADIUS*2*M_PI/60)*3600/1000);
         *((*ptr32)+ x) = (uint32_t)(((*((*rpm_ptr)+ x))*RADIUS*2*M_PI/60)*3600/1000); //radius * 2 * pi / 60;
         *((*ptrcm)+ x) = *((*cm_ptrcm)+ x);
         *((*ptrvm)+ x) = *((*vm_ptrvm)+ x);
 
     }
-    
+    energy_consumed = compute_energy_consumption();
 }
 
 
-
-
-
-
-
+*/
