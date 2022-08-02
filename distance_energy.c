@@ -224,7 +224,8 @@ void program(){
     }
 }
 
-//////////////////Unused functions/////////////////////////////
+////////////////////////Unused functions/////////////////////////////
+
 /*
  * @fn      all_array_init
  *
@@ -234,7 +235,7 @@ void program(){
  *
  * @return  none
  * 
-*/
+
 
 void all_array_init(void ){
 
@@ -245,7 +246,7 @@ void all_array_init(void ){
     }
 }
 
-/*
+
  * @fn      all_all_array_init
 
  * @brief   This function calls coefficient_array_init and all_array_init functions which initializes the coefficient array and other declared arrays.
@@ -255,7 +256,7 @@ void all_array_init(void ){
  *
  * @return  none
  * 
-*/
+
 
 void all_all_array_init(){
 
@@ -264,7 +265,7 @@ void all_all_array_init(){
     
 }
 
-/*
+
  * @fn      collect_mcu_data
 
  * @brief   This function collects the voltage, rpm, current values from the MCU and append it into the 
@@ -274,7 +275,7 @@ void all_all_array_init(){
  *
  * @return  none 
  * 
-*/
+
 
 void collect_mcu_data (uint32_t (*rpm_ptr)[] ,uint8_t (*cm_ptrcm)[] ,uint8_t(*vm_ptrvm)[]){
 
@@ -291,4 +292,4 @@ void collect_mcu_data (uint32_t (*rpm_ptr)[] ,uint8_t (*cm_ptrcm)[] ,uint8_t(*vm
 }
 
 
-
+*/
