@@ -149,7 +149,7 @@ uint32_t compute_distance_travelled(){
         distance_travelled = distance_travelled + ((*((*ptr)+ x)) * (*((*ptr32)+ x)));
 
     }
-    mean = (float)distance_travelled/3*((DATA_POINTS-1)*TIME_INTERVAL);
+    mean = (float)distance_travelled/3*(TIME_INTERVAL);
     distance_travelled = (uint32_t)mean;
     return distance_travelled;
 }
@@ -293,3 +293,4 @@ void collect_mcu_data (uint32_t (*rpm_ptr)[] ,uint8_t (*cm_ptrcm)[] ,uint8_t(*vm
 
 
 */
+
