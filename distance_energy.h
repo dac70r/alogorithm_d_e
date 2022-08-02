@@ -29,5 +29,6 @@ void all_array_init();
 void all_all_array_init ();
 void collect_mcu_data (uint32_t (*rpm_ptr)[] ,uint8_t (*cm_ptrcm)[] ,uint8_t(*vm_ptrvm)[]);
 uint32_t compute_energy_consumption();
+uint32_t compute_distance_travelled();
 void print_log();
 void program();

@@ -30,6 +30,7 @@ uint8_t (*ptrcm)[DATA_POINTS] = &current_motor;
 
 //Other Variables
 uint16_t energy_consumed = 0;
+uint16_t distance_travelled = 0;
 uint8_t status = 0;
 time_t t;
 
@@ -80,7 +81,8 @@ void coefficient_array_init(){ //change data points if necessary
 
 void all_array_deinit(){
     energy_consumed = compute_energy_consumption();
-    printf("Average energy consumption in this interval is %d joules\n",compute_energy_consumption());
+    distance_travelled =  compute_distance_travelled();
+    printf("Average energy consumption in this interval is %d joules, total distance travelled in this interval is %d meters\n",compute_energy_consumption(),compute_distance_travelled());
     for(uint8_t x=0; x<DATA_POINTS; x++){
         if(x == 0){
             *(*(ptr32)) = *(*(ptr32)+DATA_POINTS-1); 
@@ -123,6 +125,33 @@ uint32_t compute_energy_consumption(){
     mean = (float)energy_consumption/3*TIME_INTERVAL;
     energy_consumption = (uint32_t)mean;
     return energy_consumption;
+}
+
+/*
+ * @fn      compute_distance_travelled
+ *
+ * @brief   This function calculates the average distance_travelled of the e_scooter 
+ *          over a period using Simpson's Rule
+ *
+ * @param   none            
+ *
+ * @return  distance_travelled (unit meters) in type: uint32_t 
+ * 
+*/
+
+uint32_t compute_distance_travelled(){
+
+    uint32_t distance_travelled = 0;
+    float mean;
+
+    for(uint8_t x=0; x<DATA_POINTS; x++){
+        
+        distance_travelled = distance_travelled + ((*((*ptr)+ x)) * (*((*ptr32)+ x)));
+
+    }
+    mean = (float)distance_travelled/3*((DATA_POINTS-1)*TIME_INTERVAL);
+    distance_travelled = (uint32_t)mean;
+    return distance_travelled;
 }
 
 /*
